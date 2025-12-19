@@ -2,10 +2,9 @@ import sqlite3
 import os
 from datetime import datetime
 
-DB_PATH = "/storage/emulated/0/kasir_app/kasir.db"
+DB_PATH = "kasir.db"
 
 def connect():
-    os.makedirs("/storage/emulated/0/kasir_app", exist_ok=True)
     return sqlite3.connect(DB_PATH)
 
 def init_db():
@@ -36,11 +35,27 @@ def init_db():
     # Tabel sales
     c.execute("""
     CREATE TABLE IF NOT EXISTS sales (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        total INTEGER,
-        date TEXT
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    total INTEGER,
+    bayar INTEGER,
+    kembalian INTEGER,
+    date TEXT
     )
     """)
+
+# Tabel sales_items (DETAIL BARANG PER TRANSAKSI)
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS sales_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sale_id INTEGER,
+    product_name TEXT,
+    price INTEGER,
+    qty INTEGER,
+    subtotal INTEGER,
+    FOREIGN KEY (sale_id) REFERENCES sales(id)
+    )
+    """)
+
 
     # User default
     c.execute(
